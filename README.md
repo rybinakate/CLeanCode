@@ -4,8 +4,7 @@ A modern, type-checked Python project template for geospatial analysis.
 
 ## 🚀 Features
 
-- **Modern Dependency Management**: Built with `uv` for blazing fast package 
-resolution.
+- **Modern Dependency Management**: Built with `uv` for blazing fast package resolution.
 - **Code Quality**: Enforced with `ruff` (linting & formatting).
 - **Type Safety**: Strict type checking with `mypy`.
 - **Geospatial Stack**: Ready for `geopandas`, `shapely`, and `matplotlib`.
@@ -13,26 +12,36 @@ resolution.
 ## 🛠️ Installation
 
 1. Clone the repository:
-   ```bash
-   git clone <your-repo-url>
-   cd hello-gis
+```bash
+git clone <your-repo-url>
+cd hello-gis
+```
 
-Install dependencies using uv:
+2. Install dependencies using `uv`:
+```bash
 uv sync
+```
 
- Usage
+## 💻 Usage
+
+Run the main script:
+```bash
 make run
-
+```
 
 Run linting and type checking:
+```bash
 make check
-
+```
 
 Format the code:
+```bash
 make format
+```
 
+## 📂 Project Structure
 
-📂 Project Structure
+```text
 hello-gis/
 ├── src/                 # Source code (production-ready)
 │   └── main.py          # Main entry point
@@ -46,11 +55,10 @@ hello-gis/
 ├── mypy.ini             # Type checking configuration
 ├── .gitignore           # Rules for files to exclude from Git
 └── README.md            # This file
+```
 
+*Note: The `data/` and `outputs/` directories are intentionally excluded from Git to keep the repository lightweight. They are created locally or via data download scripts.*
 
-Note: The data/ and outputs/ directories are intentionally excluded from Git to 
-keep the repository lightweight. They are created locally or via data download 
-scripts.
-📄 License
-MI
+## 📄 License
 
+MIT
