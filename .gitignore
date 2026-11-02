@@ -10,3 +10,16 @@ wheels/
 .venv
 .DS_Store
 **/.DS_Store
+
+# Данные и результаты (никогда не коммитим!)
+data/raw/
+data/processed/
+outputs/
+*.csv
+*.geojson
+*.parquet
+
+# Кэш инструментов
+.mypy_cache/
+.ruff_cache/
+__pycache__/
