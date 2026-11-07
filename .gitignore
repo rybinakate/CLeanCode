@@ -14,7 +14,7 @@ wheels/
 # Данные и результаты (никогда не коммитим!)
 data/raw/
 data/processed/
-outputs/
+outputs/*
 *.csv
 *.geojson
 *.parquet
@@ -23,3 +23,7 @@ outputs/
 .mypy_cache/
 .ruff_cache/
 __pycache__/
+
+# Разрешаем PNG и PDF в outputs/ (ЭТО ДОЛЖНО БЫТЬ В КОНЦЕ!)
+!outputs/*.png
+!outputs/*.pdf
