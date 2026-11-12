@@ -4,18 +4,18 @@
 # ============================================================
 
 # --- ПЕРЕМЕННЫЕ ---
-# Короткие имена для часто используемых команд и путей
 PYTHON := uv run python
 SRC := src
+PACKAGE := $(SRC)/hello_gis
 DATA_RAW := data/raw
 DATA_PROCESSED := data/processed
 OUTPUTS := outputs
 
-# Все Python-файлы в папке src/
-SOURCES := $(wildcard $(SRC)/*.py)
+# Все Python-файлы в пакете hello_gis/
+SOURCES := $(wildcard $(PACKAGE)/*.py)
 
 # --- ЦЕЛИ, КОТОРЫЕ НЕ ЯВЛЯЮТСЯ ФАЙЛАМИ ---
-.PHONY: all help install check format run test clean download_data process_data
+.PHONY: all help install check format run test clean data viz
 
 # --- ГЛАВНАЯ ЦЕЛЬ (выполняется при простом `make`) ---
 all: check run
@@ -29,45 +29,54 @@ help:
 	@echo "  make install       - Установить зависимости"
 	@echo "  make check         - Проверить код (mypy + ruff)"
 	@echo "  make format        - Отформатировать код"
-	@echo "  make run           - Запустить основной скрипт"
+	@echo "  make run           - Запустить основной скрипт (main.py)"
+	@echo "  make data          - Скачать данные из OSM"
+	@echo "  make viz           - Создать визуализации"
 	@echo "  make test          - Запустить тесты"
-	@echo "  make download_data - Скачать данные (заглушка)"
-	@echo "  make process_data  - Обработать данные (заглушка)"
-	@echo "  make clean         - Очистить кэш и временные файлы"
+	@echo "  make clean         - Очистить кэш, outputs и временные файлы"
 
 # --- УСТАНОВКА ЗАВИСИМОСТЕЙ ---
 install:
 	uv sync
 	@echo "✅ Зависимости установлены"
 
+# --- СКАЧИВАНИЕ ДАННЫХ ---
+data:
+	@echo "📥 Скачиваем данные из OSM..."
+	$(PYTHON) -m hello_gis.fetch_data
+	@echo "✅ Данные готовы!"
+
+# --- ВИЗУАЛИЗАЦИЯ ---
+viz:
+	@echo "🎨 Создаем визуализации..."
+	$(PYTHON) -m hello_gis.visualize
+	@echo "✅ Визуализации готовы!"
+
+	# --- СЕТЕВОЙ АНАЛИЗ ---
+network:
+	@echo "🕸️  Запускаем сетевой анализ доступности парков..."
+	$(PYTHON) -m hello_gis.network_analysis
+	@echo "✅ Анализ завершен!"
+
 # --- ПРОВЕРКА КОДА ---
-# Зависит от всех исходных файлов: если код изменился — проверка запустится
 check: $(SOURCES)
 	@echo "🔍 Проверяем типы (mypy)..."
-	$(PYTHON) -m mypy $(SRC)/
+	$(PYTHON) -m mypy $(PACKAGE)/
 	@echo "🎨 Проверяем стиль (ruff)..."
-	ruff check $(SRC)/
+	ruff check $(PACKAGE)/
 	@echo "✅ Все проверки пройдены!"
 
 # --- ФОРМАТИРОВАНИЕ КОДА ---
 format:
 	@echo "🎨 Форматируем код..."
-	ruff format $(SRC)/
-	ruff check --fix $(SRC)/
+	ruff format $(PACKAGE)/
+	ruff check --fix $(PACKAGE)/
 	@echo "✅ Код отформатирован!"
 
 # --- ЗАПУСК ПРОГРАММЫ ---
 run: $(SOURCES)
 	@echo "🚀 Запускаем программу..."
-	$(PYTHON) $(SRC)/main.py
-
-# Добавьте эту цель в ваш Makefile (после цели run)
-
-# --- ВИЗУАЛИЗАЦИЯ ---
-viz:
-	@echo "🎨 Создаем визуализации..."
-	$(PYTHON) $(SRC)/visualize.py
-	@echo "✅ Визуализации готовы!"
+	$(PYTHON) -m hello_gis.main
 
 # --- ТЕСТЫ ---
 test:
@@ -75,22 +84,12 @@ test:
 	$(PYTHON) -m pytest tests/ -v
 	@echo "✅ Тесты пройдены!"
 
-# --- РАБОТА С ДАННЫМИ (заглушки для будущего) ---
-download_data:
-	@echo "📥 Скачиваем данные..."
-	@mkdir -p $(DATA_RAW)
-	@echo "   Здесь будет скрипт скачивания данных из OSM/API"
-	@echo "✅ Данные 'скачаны' в $(DATA_RAW)"
-
-process_data: download_data
-	@echo "⚙️  Обрабатываем данные..."
-	@mkdir -p $(DATA_PROCESSED) $(OUTPUTS)
-	@echo "   Здесь будет скрипт обработки данных"
-	@echo "✅ Результаты сохранены в $(OUTPUTS)"
-
 # --- ОЧИСТКА ---
 clean:
-	@echo "🧹 Очищаем кэш..."
+	@echo "🧹 Очищаем кэш и временные файлы..."
 	rm -rf .mypy_cache .ruff_cache __pycache__
 	rm -rf .pytest_cache
+	rm -rf $(PACKAGE)/__pycache__
+	rm -rf cache/
+	rm -rf $(OUTPUTS)/*
 	@echo "✅ Очистка завершена!"
